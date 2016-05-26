@@ -55,16 +55,16 @@ func (c *ImageController) Upload(ctx *app.UploadImageContext) error {
 	}
 	defer file.Close()
 
+	// Save the image metadata
+	data := c.saveImage(handler.Filename)
+
 	// Save the file in the "images" directory
-	f, err := os.OpenFile("./images/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	f, err := os.OpenFile(fmt.Sprintf("./images/%d", data.ID), os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
 		return fmt.Errorf("failed to save file: %s", err) // causes a 500 response
 	}
 	defer f.Close()
 	io.Copy(f, file)
-
-	// Save the image metadata
-	data := c.saveImage(handler.Filename)
 
 	// And return it
 	return ctx.OK(&app.ImageMedia{ID: data.ID, Filename: data.Filename, UploadedAt: data.UploadedAt})

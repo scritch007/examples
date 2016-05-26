@@ -47,3 +47,7 @@ var ImageMedia = MediaType("application/vnd.goa.examples.upload.image", func() {
 		Attribute("uploaded_at")
 	})
 })
+
+var _ = Resource("website", func() {
+	Files("/*filename", "./website/")
+})
